@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>{{ nombre }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            font-family: sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+
+        h1 {
+            font-size: 24px;
+        }
+
+        .stock {
+            font-size: 32px;
+            margin: 20px 0;
+        }
+
+        input[type=number] {
+            font-size: 20px;
+            padding: 5px;
+            width: 80px;
+            margin: 10px;
+        }
+
+        button {
+            font-size: 20px;
+            padding: 10px 20px;
+            margin: 10px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .sumar {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .restar {
+            background-color: #f44336;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>{{ nombre }}</h1>
+    <div class="stock">Stock actual: <strong>{{ stock }}</strong></div>
+    <form method="POST" action="/update/{{ id }}">
+        <input type="number" name="cantidad" min="1" value="1" required>
+        <br>
+        <button class="sumar" name="accion" value="sumar">Sumar</button>
+        <button class="restar" name="accion" value="restar">Restar</button>
+    </form>
+</body>
+
+</html>

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Stock Completo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+        }
+
+        #container {
+            width: 1050px;
+            margin: 0 auto;
+        }
+
+        .divContainer {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .codigoProd,
+        .nombreProd,
+        .stockProd {
+            margin: 0;
+            font-size: 1.2em;
+        }
+
+        .stockProd {
+            color: #2c3e50;
+            font-weight: bold;
+        }
+
+        #error-message {
+            color: red;
+            text-align: center;
+            display: none;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                margin: 10px;
+            }
+
+            #container {
+                width: 100%;
+                margin: 0 auto;
+            }
+
+            .divContainer {
+                flex-direction: row;
+                align-items: flex-start;
+                gap: 5px;
+            }
+
+            .codigoProd,
+            .nombreProd,
+            .stockProd {
+                font-size: 1em;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="error-message"></div>
+    <div id="container"></div>
+
+    <script>
+        function template(codigoProd, nombreProd, stockProd) {
+            const container = document.getElementById("container");
+
+            const divContainer = document.createElement("div");
+            divContainer.className = "divContainer";
+
+            const codigo = document.createElement("h2");
+            codigo.className = "codigoProd";
+            codigo.textContent = codigoProd;
+            divContainer.appendChild(codigo);
+
+            const nombre = document.createElement("h2");
+            nombre.className = "nombreProd";
+            nombre.textContent = nombreProd;
+            divContainer.appendChild(nombre);
+
+            const stock = document.createElement("h2");
+            stock.className = "stockProd";
+            stock.textContent = stockProd;
+            divContainer.appendChild(stock);
+
+            container.appendChild(divContainer);
+        }
+
+        fetch(`/api/stock`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Error al obtener los datos del stock');
+                }
+
+                return response.json();
+            })
+            .then(data => {
+                data.forEach(info => {
+                    template(info.Codigo, info.Nombre, info.Stock);
+                });
+            })
+            .catch((error) => console.error("Error en la conexion con la API", error))
+    </script>
+</body>
+
+</html>

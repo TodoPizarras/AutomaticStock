@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carga de Ventas Masiva</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .product-entry-form {
+            margin-top: 20px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            max-width: 400px;
+            margin-bottom: 10px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        select,
+        input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: space-between;
+            width: 400px;
+            margin-top: 20px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .message {
+            color: green;
+            margin-top: 10px;
+        }
+
+        .error {
+            color: red;
+            margin-top: 10px;
+        }
+
+        #divClose {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+        }
+
+        #divClose {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            margin: auto;
+        }
+
+        .close-button {
+            background-color: white;
+            color: #f44336;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 24px;
+            width: 25px;
+            height: 25px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-left: 30px;
+            visibility: hidden;
+        }
+
+        .close-button:hover {
+            background-color: white;
+        }
+
+        .close-button.visible {
+            visibility: visible;
+        }
+
+    </style>
+</head>
+
+<body>
+    <h1>Carga de Ventas Masiva</h1>
+
+    <div id="forms-container">
+    </div>
+
+    <div class="action-buttons">
+        <button type="button" id="addAnotherProduct">Cargar otro Producto</button>
+        <button type="submit" id="submitAllForms">Cargar Stock</button>
+    </div>
+
+    {% if message %}
+    <p class="message">{{ message }}</p>
+    {% endif %}
+    {% if error %}
+    <p class="error">{{ error }}</p>
+    {% endif %}
+
+    <p><a href="/">Volver al inicio</a></p>
+
+    <script>
+        const formsContainer = document.getElementById("forms-container");
+        const addAnotherProductBtn = document.getElementById("addAnotherProduct");
+        const submitAllFormsBtn = document.getElementById("submitAllForms");
+
+        function createProductForm(isFirst = false) {
+            const formDiv = document.createElement("div");
+            formDiv.classList.add("product-entry-form");
+            formDiv.innerHTML = `
+                <div id="divClose">
+                    <label for="producto_id">Seleccionar Producto:</label>
+                    <button type="button" class="close-button ${isFirst ? '' : 'visible'}">X</button>
+                </div>
+                <select name="producto_id" class="producto_id" required>
+                    {% for id in product_ids %}
+                    <option value="{{ id }}">{{ id }}</option>
+                    {% endfor %}
+                </select>
+
+                <label for="cantidad_recibida">Cantidad Recibidas:</label>
+                <input type="number" name="cantidad_recibida" class="cantidad_recibida" min="0" value="1" required>
+            `;
+            formsContainer.appendChild(formDiv);
+
+            const closeButton = formDiv.querySelector(".close-button");
+            closeButton.addEventListener("click", () => {
+                formDiv.remove();
+            });
+        }
+
+        createProductForm(true);
+
+        addAnotherProductBtn.addEventListener("click", () => {
+            createProductForm();
+        });
+
+        submitAllFormsBtn.addEventListener("click", async () => {
+            const productEntries = [];
+            const productForms = document.querySelectorAll(".product-entry-form");
+
+            productForms.forEach(form => {
+                const productId = form.querySelector(".producto_id").value;
+                const cantidadRecibida = form.querySelector(".cantidad_recibida").value;
+
+                if (productId && cantidadRecibida && parseInt(cantidadRecibida) >= 0) {
+                    productEntries.push({
+                        producto_id: productId,
+                        cantidad_recibida: parseInt(cantidadRecibida)
+                    });
+                }
+            });
+
+            try {
+                const response = await fetch("/masivo", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(productEntries)
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    formsContainer.innerHTML = '';
+
+                    createProductForm(true);
+                }
+            } catch (error) {
+                console.error("Error al enviar la solicitud:", error);
+            }
+        });
+    </script>
+
+</body>
+
+</html>

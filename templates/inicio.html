@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema TODOPIZARRAS</title>
+
+    <link rel="shortcut icon" href="../static/img/Logo TodoPizarras.jpeg" type="image/x-icon">
+
+    <style>
+        body {
+            margin: 0;
+        }
+
+        #nav {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+        }
+
+        img {
+            margin: auto;
+        }
+
+        h1 {
+            font-size: 70px;
+            margin: auto;
+        }
+
+        #red {
+            color: red;
+        }
+
+        #ref {
+            color: #0000EE;
+        }
+
+        @media (max-width: 500px) {
+            #nav {
+                display: flex;
+                flex-direction: column;
+            }
+        }
+        
+    </style>
+
+</head>
+
+<body>
+    <div id="nav">
+        <img src="/static/img/Logo TodoPizarras.jpeg" alt="Logo TodoPizarras" width="340px" height="130px">
+
+        <h1>Todo<span id="red">Pizarras</span></h1>
+    </div>
+
+    <div>
+        <p>Esta página es una version chiquita de automatización de stock de <a href="https://www.todopizarras.com.ar/" id="ref" target="_blank">TodoPizarras</a></p>
+
+        <ul>
+            <li>
+                Cargar Stock de Forma Manual <a href="/masivo">Click Aquí</a>
+            </li>
+            <li>
+                Aumentar o Disminuir el Stock <a href="/producto">Click Aquí</a>
+            </li>
+            <li>
+                Ver los Codigos QR de los productos <a href="/qr_all">Click Aquí</a>
+            </li>
+        </ul>
+    </div>
+</body>
+
+</html>
